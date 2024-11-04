@@ -25,6 +25,7 @@ model User {
 
 model Link {
   id     Int    @id @default(autoincrement()) @db.Integer
+  title  String
   link   String
   User   User   @relation(fields: [userId], references: [id])
   userId Int
