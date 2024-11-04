@@ -28,6 +28,22 @@ async function create(
     .json(result);
 }
 
+async function login(
+  req: Request<Record<string, any>, Record<string, any>, UserCreateSchema>,
+  res: Response,
+) {
+  const result = await service.login(req.body);
+  if (result.status === 'fail') {
+    return res.status(400).json(result);
+  }
+  const token = jwt.sign(result.data.users, JWT_SECRET, { expiresIn: '2d' });
+  return res
+    .status(200)
+    .cookie('token', token, { sameSite: 'none', secure: true, httpOnly: true })
+    .json(result);
+}
+
 export default {
   create,
+  login
 };
