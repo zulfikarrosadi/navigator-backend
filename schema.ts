@@ -8,3 +8,8 @@ export type ApiResponse<Data> =
         details?: Record<string, string>;
       };
     };
+
+export type JWT_Payload = {
+  username: string;
+  id: number;
+};
