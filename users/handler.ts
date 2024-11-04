@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import service from './service';
 import type { UserCreateSchema } from './schema';
 
-async function createUser(
+async function create(
   req: Request<Record<string, any>, Record<string, any>, UserCreateSchema>,
   res: Response,
 ) {
@@ -15,5 +15,5 @@ async function createUser(
 }
 
 export default {
-  createUser,
+  create,
 };
