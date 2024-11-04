@@ -9,3 +9,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add endpoint to create user account
 - Add input validation when create user account
+- Add endpoint to add links
+- add input validation when add new link
