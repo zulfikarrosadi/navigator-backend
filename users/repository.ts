@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { ServerError, UserAlreadyExistError } from '../error';
+import { AuthError, ServerError, UserAlreadyExistError } from '../error';
 import type { UserCreateSchema } from './schema';
 
 const prisma = new PrismaClient();
@@ -12,7 +12,7 @@ async function createUser(data: UserCreateSchema) {
     const newUser = await prisma.user.create({
       data: {
         username: data.username,
-        key: data.key || null,
+        key: data.key,
       },
       select: {
         id: true,
@@ -32,6 +32,18 @@ async function createUser(data: UserCreateSchema) {
   }
 }
 
+async function getUserByUsername(username: string) {
+  const user = await prisma.user.findUnique({
+    where: { username: username },
+    select: { id: true, username: true, key: true },
+  });
+  if (!user) {
+    throw new AuthError()
+  }
+  return user
+}
+
 export default {
   createUser,
+  getUserByUsername
 };
