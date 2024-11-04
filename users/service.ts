@@ -2,11 +2,17 @@ import userRepository from './repository';
 import type { ApiResponse } from '../schema';
 import type { UserCreateSchema } from './schema';
 
+const DEFAULT_BUN_HASH_COST = 4
+
 async function createUser(
   data: UserCreateSchema,
 ): Promise<ApiResponse<{ id: number; username: string }>> {
   try {
-    const newUser = await userRepository.createUser(data);
+    const hashedKey = Bun.password.hashSync(data.key, {
+      algorithm: 'bcrypt',
+      cost: DEFAULT_BUN_HASH_COST
+    })
+    const newUser = await userRepository.createUser({...data, key: hashedKey});
 
     return {
       status: 'success',
