@@ -21,3 +21,11 @@ export class BadRequest extends Error {
     this.code = 400;
   }
 }
+
+export class AuthError extends Error {
+  public code: number;
+  constructor(message: string = 'username or key is incorrect') {
+    super(message);
+    this.code = 400;
+  }
+}
