@@ -11,3 +11,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add input validation when create user account
 - Add endpoint to add links
 - add input validation when add new link
+- Prevent anonymous to craete and modify link
+- Add login feature
