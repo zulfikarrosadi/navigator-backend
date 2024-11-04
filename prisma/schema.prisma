@@ -17,7 +17,7 @@ datasource db {
 model User {
   id       Int     @id @default(autoincrement()) @db.Integer
   username String  @unique
-  key      String?
+  key      String
   Link     Link[]
 
   @@map("users")
