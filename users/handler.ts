@@ -1,7 +1,13 @@
 import type { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import service from './service';
 import type { UserCreateSchema } from './schema';
 
+const JWT_SECRET = process.env.JWT_SECRET as string;
+
+/**
+ * Create user
+ */
 async function create(
   req: Request<Record<string, any>, Record<string, any>, UserCreateSchema>,
   res: Response,
@@ -10,8 +16,16 @@ async function create(
   if (result.status === 'fail') {
     return res.status(result.error.code).json(result);
   }
+  const token = jwt.sign(result.data.users, JWT_SECRET, { expiresIn: '3d' });
 
-  return res.status(201).json(result);
+  return res
+    .status(201)
+    .cookie('token', token, {
+      sameSite: 'none',
+      secure: true,
+      httpOnly: true,
+    })
+    .json(result);
 }
 
 export default {
