@@ -13,6 +13,7 @@ app.use(express.json());
 app.use(cookieParser())
 
 app.post('/api/users', validateInput(userCreateSchema), userHandler.create);
+app.post('/api/signin', validateInput(userCreateSchema), userHandler.login);
 app.use(validateUser)
 app.post('/api/links', validateInput(linksCreateSchema), linkHandler.create);
 
