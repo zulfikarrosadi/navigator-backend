@@ -1,11 +1,14 @@
 import { PrismaClient } from '@prisma/client';
-import type { LinkCreateSchema } from './schema';
-import { BadRequest, ServerError } from '../error';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import type { LinkCreateSchema, LinkUpdateSchema } from './schema';
+import { BadRequest, NotFoundError, ServerError } from '../error';
+import {
+  PrismaClientInitializationError,
+  PrismaClientKnownRequestError,
+} from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
-const FOREIGN_KEY_LINK_TO_USER_ERROR = 'P2025';
+const RELATED_RECORD_NOT_EXIST = 'P2025';
 
 async function createLink(data: LinkCreateSchema, userId: number) {
   try {
@@ -26,7 +29,7 @@ async function createLink(data: LinkCreateSchema, userId: number) {
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       console.error('create link prisma error: ', error);
-      if (error.code === FOREIGN_KEY_LINK_TO_USER_ERROR) {
+      if (error.code === RELATED_RECORD_NOT_EXIST) {
         throw new BadRequest(
           'fail to add new link, make sure you are using correct user account and try again',
         );
@@ -37,6 +40,91 @@ async function createLink(data: LinkCreateSchema, userId: number) {
   }
 }
 
+async function updateLink(
+  data: LinkUpdateSchema,
+  linkId: number,
+  userId: number,
+) {
+  try {
+    const updatedLink = await prisma.link.update({
+      where: {
+        id: linkId,
+        AND: {
+          User: {
+            id: userId,
+          },
+        },
+      },
+      data: {
+        title: data.title,
+        link: data.link,
+      },
+      select: {
+        title: true,
+        link: true,
+      },
+    });
+    return updatedLink;
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      if (error.code === RELATED_RECORD_NOT_EXIST) {
+        throw new NotFoundError('update link fail, link is not found');
+      }
+    }
+    throw new BadRequest('update link fail, please try again');
+  }
+}
+
+async function deleteLink(id: number) {
+  try {
+    await prisma.link.delete({
+      where: { id: id },
+    });
+    return true;
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      console.error('delete link repo prisma error: ', error);
+
+      if (error.code === RELATED_RECORD_NOT_EXIST) {
+        throw new NotFoundError('delete link fail, link is not found');
+      }
+    }
+    console.error('delete link repo error: ', error);
+    throw new BadRequest('delete link fail, please try again');
+  }
+}
+
+async function getLinks(
+  username: string,
+): Promise<{ id: number; title: string; link: string }[] | [] | ServerError> {
+  try {
+    const links = await prisma.link.findMany({
+      where: {
+        User: {
+          username: username,
+        },
+      },
+      take: 50,
+      select: {
+        id: true,
+        title: true,
+        link: true,
+      },
+    });
+    return links;
+  } catch (error) {
+    if (error instanceof PrismaClientInitializationError) {
+      console.log('prisma connection timeout error: ', error);
+    }
+    throw new ServerError(
+      'fail to retrieve your requested links, please try again later',
+    );
+  }
+}
+
 export default {
   createLink,
+  updateLink,
+  deleteLink,
+  getLinks,
 };
