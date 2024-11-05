@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add endpoint to update link
 - Add endpoint to delete link
 - Add endpoint to get links by username
+### Fix
+- Links can be deleted by their owner
 
 ## v0.1.0 2024-11-04
 ### Added
