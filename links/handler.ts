@@ -35,4 +35,12 @@ async function update(
   }
   return res.status(200).json(result);
 }
-export default { create, update };
+
+async function destroy(req: Request<{ id: string }>, res: Response) {
+  const result = await service.deleteLink(req.params.id);
+  if (result.status === 'fail') {
+    return res.status(result.error.code).json(result);
+  }
+  return res.sendStatus(204);
+}
+export default { create, update, destroy };
