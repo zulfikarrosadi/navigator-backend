@@ -1,11 +1,14 @@
 import { PrismaClient } from '@prisma/client';
-import type { LinkCreateSchema } from './schema';
-import { BadRequest, ServerError } from '../error';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import type { LinkCreateSchema, LinkUpdateSchema } from './schema';
+import { BadRequest, NotFoundError, ServerError } from '../error';
+import {
+  PrismaClientInitializationError,
+  PrismaClientKnownRequestError,
+} from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
-const FOREIGN_KEY_LINK_TO_USER_ERROR = 'P2025';
+const RELATED_RECORD_NOT_EXIST = 'P2025';
 
 async function createLink(data: LinkCreateSchema, userId: number) {
   try {
@@ -26,7 +29,7 @@ async function createLink(data: LinkCreateSchema, userId: number) {
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       console.error('create link prisma error: ', error);
-      if (error.code === FOREIGN_KEY_LINK_TO_USER_ERROR) {
+      if (error.code === RELATED_RECORD_NOT_EXIST) {
         throw new BadRequest(
           'fail to add new link, make sure you are using correct user account and try again',
         );
