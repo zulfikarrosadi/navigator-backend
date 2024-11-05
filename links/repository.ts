@@ -93,8 +93,38 @@ async function deleteLink(id: number) {
     throw new BadRequest('delete link fail, please try again');
   }
 }
+
+async function getLinks(
+  username: string,
+): Promise<{ id: number; title: string; link: string }[] | [] | ServerError> {
+  try {
+    const links = await prisma.link.findMany({
+      where: {
+        User: {
+          username: username,
+        },
+      },
+      take: 50,
+      select: {
+        id: true,
+        title: true,
+        link: true,
+      },
+    });
+    return links;
+  } catch (error) {
+    if (error instanceof PrismaClientInitializationError) {
+      console.log('prisma connection timeout error: ', error);
+    }
+    throw new ServerError(
+      'fail to retrieve your requested links, please try again later',
+    );
+  }
+}
+
 export default {
   createLink,
   updateLink,
   deleteLink,
+  getLinks,
 };
