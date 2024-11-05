@@ -75,10 +75,17 @@ async function updateLink(
   }
 }
 
-async function deleteLink(id: number) {
+async function deleteLink(id: number, userId: number) {
   try {
     await prisma.link.delete({
-      where: { id: id },
+      where: {
+        id: id,
+        AND: {
+          User: {
+            id: userId,
+          },
+        },
+      },
     });
     return true;
   } catch (error) {
