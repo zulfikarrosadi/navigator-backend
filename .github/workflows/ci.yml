@@ -1,0 +1,22 @@
+name: Integration Test
+on:
+  pull_request:
+    branches: ['dev']
+  push:
+    branches: ['dev']
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  DATABASE_DIRECT: ${{ secrets.DATABASE_URL }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  PORT: ${{ vars.PORT }}
+
+jobs:
+  bun-setup-and-test:
+    name: 'Bun Setup And Test'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun test
