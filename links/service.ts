@@ -63,4 +63,31 @@ async function updateLink(
     };
   }
 }
+
+async function deleteLink(id: string): Promise<ApiResponse<null>> {
+  const parsedLinkId = parseInt(id, 10);
+  if (Number.isNaN(parsedLinkId)) {
+    return {
+      status: 'fail',
+      error: {
+        code: 404,
+        message: 'fail to delete link, link is not found',
+      },
+    };
+  }
+  try {
+    await repository.deleteLink(parsedLinkId);
+    return {
+      status: 'success',
+    };
+  } catch (error: any) {
+    return {
+      status: 'fail',
+      error: {
+        code: error.code,
+        message: error.message || error,
+      },
+    };
+  }
+}
 export default { createLink, updateLink, deleteLink, getLinks };
