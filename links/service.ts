@@ -90,4 +90,42 @@ async function deleteLink(id: string): Promise<ApiResponse<null>> {
     };
   }
 }
+
+async function getLinks(
+  username: string,
+): Promise<ApiResponse<[] | { id: number; title: string; link: string }[]>> {
+  try {
+    const links = await repository.getLinks(username);
+    if (links instanceof ServerError) {
+      throw links;
+    }
+    if (!links.length) {
+      return {
+        status: 'success',
+        data: {
+          links: [],
+        },
+      };
+    }
+    return {
+      status: 'success',
+      data: {
+        links: links.map((link) => ({
+          id: link.id,
+          title: link.title,
+          link: link.link,
+        })),
+      },
+    };
+  } catch (error: any) {
+    return {
+      status: 'fail',
+      error: {
+        code: error.code,
+        message: error.message || error,
+      },
+    };
+  }
+}
+
 export default { createLink, updateLink, deleteLink, getLinks };
