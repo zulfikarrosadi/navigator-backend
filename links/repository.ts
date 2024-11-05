@@ -40,6 +40,42 @@ async function createLink(data: LinkCreateSchema, userId: number) {
   }
 }
 
+async function updateLink(
+  data: LinkUpdateSchema,
+  linkId: number,
+  userId: number,
+) {
+  try {
+    const updatedLink = await prisma.link.update({
+      where: {
+        id: linkId,
+        AND: {
+          User: {
+            id: userId,
+          },
+        },
+      },
+      data: {
+        title: data.title,
+        link: data.link,
+      },
+      select: {
+        title: true,
+        link: true,
+      },
+    });
+    return updatedLink;
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      if (error.code === RELATED_RECORD_NOT_EXIST) {
+        throw new NotFoundError('update link fail, link is not found');
+      }
+    }
+    throw new BadRequest('update link fail, please try again');
+  }
+}
+
 export default {
   createLink,
+  updateLink,
 };
