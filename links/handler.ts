@@ -36,7 +36,10 @@ async function update(
   return res.status(200).json(result);
 }
 
-async function destroy(req: Request<{ id: string }>, res: Response) {
+async function destroy(
+  req: Request<{ id: string }>,
+  res: Response<ApiResponse<any>, { user: JWT_Payload }>,
+) {
   const result = await service.deleteLink(req.params.id);
   if (result.status === 'fail') {
     return res.status(result.error.code).json(result);

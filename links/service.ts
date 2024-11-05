@@ -64,7 +64,7 @@ async function updateLink(
   }
 }
 
-async function deleteLink(id: string): Promise<ApiResponse<null>> {
+async function deleteLink(id: string, userId: number): Promise<ApiResponse<null>> {
   const parsedLinkId = parseInt(id, 10);
   if (Number.isNaN(parsedLinkId)) {
     return {
@@ -76,7 +76,7 @@ async function deleteLink(id: string): Promise<ApiResponse<null>> {
     };
   }
   try {
-    await repository.deleteLink(parsedLinkId);
+    await repository.deleteLink(parsedLinkId, userId);
     return {
       status: 'success',
     };
