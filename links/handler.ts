@@ -43,4 +43,13 @@ async function destroy(req: Request<{ id: string }>, res: Response) {
   }
   return res.sendStatus(204);
 }
-export default { create, update, destroy };
+
+async function index(req: Request<{ username: string }>, res: Response) {
+  const result = await service.getLinks(req.params.username);
+  if (result.status === 'fail') {
+    return res.status(result.error.code).json(result);
+  }
+  return res.status(200).json(result);
+}
+
+export default { create, update, destroy, index };
