@@ -21,4 +21,18 @@ async function create(
   return res.status(201).json(result);
 }
 
-export default { create };
+async function update(
+  req: Request<{ id: string }, Record<string, any>, LinkUpdateSchema>,
+  res: Response<ApiResponse<any>, { user: JWT_Payload }>,
+) {
+  const result = await service.updateLink(
+    req.body,
+    req.params.id,
+    res.locals.user.id,
+  );
+  if (result.status === 'fail') {
+    return res.status(result.error.code).json(result);
+  }
+  return res.status(200).json(result);
+}
+export default { create, update };
