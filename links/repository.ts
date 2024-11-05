@@ -75,7 +75,26 @@ async function updateLink(
   }
 }
 
+async function deleteLink(id: number) {
+  try {
+    await prisma.link.delete({
+      where: { id: id },
+    });
+    return true;
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      console.error('delete link repo prisma error: ', error);
+
+      if (error.code === RELATED_RECORD_NOT_EXIST) {
+        throw new NotFoundError('delete link fail, link is not found');
+      }
+    }
+    console.error('delete link repo error: ', error);
+    throw new BadRequest('delete link fail, please try again');
+  }
+}
 export default {
   createLink,
   updateLink,
+  deleteLink,
 };
