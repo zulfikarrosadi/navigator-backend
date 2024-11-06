@@ -11,11 +11,12 @@
   },
   "scripts": {
     "db:push": "bunx prisma db push",
-    "db:generate": "bunx prisma db generate",
+    "db:generate": "bunx prisma generate",
     "db:pull": "bunx prisma db pull",
     "start:dev": "bun --watch src/index.ts",
     "test": "bun test --timeout 15000",
-    "start": "bun src/index.ts"
+    "start": "bun src/index.ts",
+    "start:build": "bun build ./src/index.ts --target bun --outdir ./dist"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
