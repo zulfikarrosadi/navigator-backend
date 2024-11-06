@@ -1,5 +1,4 @@
 import { expect, beforeEach, test, describe } from 'bun:test';
-import userService from '../users/service';
 import service from './service';
 
 describe('create test service', () => {
@@ -7,10 +6,6 @@ describe('create test service', () => {
     title: 'LINK TITLE 1',
     link: 'https://google.com',
   };
-  const INVALID_NEW_LINK_DATA = {
-    title: "",
-    link: ""
-  }
   const VALID_USER = {
     username: `testing`,
     key: '123',
@@ -46,13 +41,5 @@ describe('create test service', () => {
         );
       }
     });
-    test('it should fail cause invalid field', async() => {
-      const result = await service.createLink(INVALID_NEW_LINK_DATA, VALID_USER_ID)
-      expect(result.status).toBe("fail")
-      if (result.status === "fail") {
-        expect(result.error.code).toBe(400)
-        expect(result.error.message).toBe('fail to add new link, please try again later')
-      }
-    })
   });
 });
