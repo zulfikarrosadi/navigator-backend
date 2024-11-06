@@ -7,7 +7,7 @@ on:
 
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  DATABASE_DIRECT: ${{ secrets.DATABASE_URL }}
+  DATABASE_DIRECT: ${{ secrets.DIRECT_URL }}
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
   PORT: ${{ vars.PORT }}
 
