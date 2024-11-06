@@ -35,7 +35,7 @@ async function updateLink(
     return {
       status: 'fail',
       error: {
-        code: 400,
+        code: 404,
         message: 'fail to update link, link id not found',
       },
     };
