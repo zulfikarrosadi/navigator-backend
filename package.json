@@ -13,9 +13,9 @@
     "db:push": "bunx prisma db push",
     "db:generate": "bunx prisma db generate",
     "db:pull": "bunx prisma db pull",
-    "start:dev": "bun --watch index.ts",
+    "start:dev": "bun --watch src/index.ts",
     "test": "bun test --timeout 15000",
-    "start": "bun index.ts"
+    "start": "bun src/index.ts"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
