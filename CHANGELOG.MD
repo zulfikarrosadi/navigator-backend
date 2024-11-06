@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). *hopefully* h3h3
 
+## v0.2.1 2024-11-06
+### Fix
+- Change HTTP error code when update link fail
+- Change github action workflow file, update DIRECT_URL env variable
+- Update links validation schema, trim every user input
 ## v0.2.0 2024-11-05
 ### Added
 - Add endpoint to update link
