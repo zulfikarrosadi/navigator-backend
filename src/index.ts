@@ -6,11 +6,18 @@ import { userCreateSchema } from './users/schema';
 import { linksCreateSchema, linkUpdateSchema } from './links/schema';
 import validateUser from './middlewares/validateUser';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors(
+  {
+    credentials: true,
+    origin: ['*']
+  }
+));
 
 app.post('/api/signup', validateInput(userCreateSchema), userHandler.create);
 app.post('/api/signin', validateInput(userCreateSchema), userHandler.login);
