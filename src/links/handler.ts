@@ -40,7 +40,7 @@ async function destroy(
   req: Request<{ id: string }>,
   res: Response<ApiResponse<any>, { user: JWT_Payload }>,
 ) {
-  const result = await service.deleteLink(req.params.id);
+  const result = await service.deleteLink(req.params.id, res.locals.user.id);
   if (result.status === 'fail') {
     return res.status(result.error.code).json(result);
   }

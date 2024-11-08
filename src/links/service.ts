@@ -1,7 +1,6 @@
 import { type LinkCreateSchema, type LinkUpdateSchema } from './schema';
 import repository from './repository';
 import type { ApiResponse } from '../schema';
-import { Prisma, type Link } from '@prisma/client';
 import { ServerError } from '../error';
 
 async function createLink(
