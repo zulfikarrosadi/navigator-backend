@@ -129,7 +129,25 @@ async function getLinks(
   }
 }
 
+async function getLinkById(username: string, id: number) {
+  try {
+    const link = await prisma.link.findUniqueOrThrow({
+      where: { id: id, AND: { User: { username: username } } }
+    });
+    return link
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      if (error.code === RELATED_RECORD_NOT_EXIST) {
+        throw new NotFoundError("link is not found")
+      }
+    }
+    console.log("get link by id error: ", error)
+    throw new BadRequest("fail to retrive your requested links, please try again later")
+  }
+}
+
 export default {
+  getLinkById,
   createLink,
   updateLink,
   deleteLink,
