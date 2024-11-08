@@ -11,12 +11,12 @@
     "test": "jest",
     "lint": "npx biome lint ./src",
     "fix-lint": "npx biome lint --write --unsafe ./src",
-    "format": "npx biome format --write --unsafe ./src",
+    "format": "npx biome format --write ./src",
     "prepare": "husky"
   },
   "lint-staged": {
     "*": [
-      "npx biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
+      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
     ]
   },
   "keywords": [],
