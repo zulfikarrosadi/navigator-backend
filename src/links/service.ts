@@ -77,6 +77,7 @@ async function deleteLink(id: string, userId: number): Promise<ApiResponse<null>
   }
   try {
     await repository.deleteLink(parsedLinkId, userId);
+    // @ts-ignore
     return {
       status: 'success',
     };
