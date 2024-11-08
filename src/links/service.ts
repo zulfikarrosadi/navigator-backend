@@ -1,7 +1,7 @@
-import { type LinkCreateSchema, type LinkUpdateSchema } from './schema';
-import repository from './repository';
-import type { ApiResponse } from '../schema';
-import { ServerError } from '../error';
+import { ServerError } from "../error";
+import type { ApiResponse } from "../schema";
+import repository from "./repository";
+import type { LinkCreateSchema, LinkUpdateSchema } from "./schema";
 
 async function createLink(
   data: LinkCreateSchema,
@@ -10,12 +10,12 @@ async function createLink(
   try {
     const newLink = await repository.createLink(data, userId);
 
-    return { status: 'success', data: { links: newLink } };
+    return { status: "success", data: { links: newLink } };
   } catch (error: any) {
-    console.error('create link service error: ', error);
+    console.error("create link service error: ", error);
 
     return {
-      status: 'fail',
+      status: "fail",
       error: {
         code: error.code,
         message: error.message || error,
@@ -29,13 +29,13 @@ async function updateLink(
   linkId: string,
   userId: number,
 ): Promise<ApiResponse<LinkUpdateSchema & { id: number }>> {
-  const parsedLinkId = parseInt(linkId);
+  const parsedLinkId = Number.parseInt(linkId);
   if (Number.isNaN(parsedLinkId)) {
     return {
-      status: 'fail',
+      status: "fail",
       error: {
         code: 404,
-        message: 'fail to update link, link id not found',
+        message: "fail to update link, link id not found",
       },
     };
   }
@@ -43,7 +43,7 @@ async function updateLink(
   try {
     const updatedLink = await repository.updateLink(data, parsedLinkId, userId);
     return {
-      status: 'success',
+      status: "success",
       data: {
         links: {
           id: parsedLinkId,
@@ -54,7 +54,7 @@ async function updateLink(
     };
   } catch (error: any) {
     return {
-      status: 'fail',
+      status: "fail",
       error: {
         code: error.code,
         message: error.message || error,
@@ -63,14 +63,17 @@ async function updateLink(
   }
 }
 
-async function deleteLink(id: string, userId: number): Promise<ApiResponse<null>> {
-  const parsedLinkId = parseInt(id, 10);
+async function deleteLink(
+  id: string,
+  userId: number,
+): Promise<ApiResponse<null>> {
+  const parsedLinkId = Number.parseInt(id, 10);
   if (Number.isNaN(parsedLinkId)) {
     return {
-      status: 'fail',
+      status: "fail",
       error: {
         code: 404,
-        message: 'fail to delete link, link is not found',
+        message: "fail to delete link, link is not found",
       },
     };
   }
@@ -78,11 +81,11 @@ async function deleteLink(id: string, userId: number): Promise<ApiResponse<null>
     await repository.deleteLink(parsedLinkId, userId);
     // @ts-ignore
     return {
-      status: 'success',
+      status: "success",
     };
   } catch (error: any) {
     return {
-      status: 'fail',
+      status: "fail",
       error: {
         code: error.code,
         message: error.message || error,
@@ -101,14 +104,14 @@ async function getLinks(
     }
     if (!links.length) {
       return {
-        status: 'success',
+        status: "success",
         data: {
           links: [],
         },
       };
     }
     return {
-      status: 'success',
+      status: "success",
       data: {
         links: links.map((link) => ({
           id: link.id,
@@ -119,7 +122,7 @@ async function getLinks(
     };
   } catch (error: any) {
     return {
-      status: 'fail',
+      status: "fail",
       error: {
         code: error.code,
         message: error.message || error,
@@ -128,38 +131,40 @@ async function getLinks(
   }
 }
 
-async function getLinkById(username: string, id: string): Promise<ApiResponse<{ id: number, title: string, link: string }>> {
-  const parsedId = parseInt(id, 10)
+async function getLinkById(
+  username: string,
+  id: string,
+): Promise<ApiResponse<{ id: number; title: string; link: string }>> {
+  const parsedId = Number.parseInt(id, 10);
   if (Number.isNaN(parsedId)) {
     return {
       status: "fail",
       error: {
         code: 404,
-        message: "link not found"
-      }
-    }
+        message: "link not found",
+      },
+    };
   }
   try {
-    const link = await repository.getLinkById(username, parsedId)
+    const link = await repository.getLinkById(username, parsedId);
     return {
       status: "success",
       data: {
         links: {
           id: link.id,
           title: link.title,
-          link: link.link
-        }
-      }
-    }
+          link: link.link,
+        },
+      },
+    };
   } catch (error: any) {
     return {
       status: "fail",
       error: {
         message: error.message || error,
-        code: error.code
-
-      }
-    }
+        code: error.code,
+      },
+    };
   }
 }
 

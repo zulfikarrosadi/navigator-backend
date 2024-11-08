@@ -1,14 +1,14 @@
-import { PrismaClient } from '@prisma/client';
-import type { LinkCreateSchema, LinkUpdateSchema } from './schema';
-import { BadRequest, NotFoundError, ServerError } from '../error';
+import { PrismaClient } from "@prisma/client";
 import {
   PrismaClientInitializationError,
   PrismaClientKnownRequestError,
-} from '@prisma/client/runtime/library';
+} from "@prisma/client/runtime/library";
+import { BadRequest, NotFoundError, ServerError } from "../error";
+import type { LinkCreateSchema, LinkUpdateSchema } from "./schema";
 
 const prisma = new PrismaClient();
 
-const RELATED_RECORD_NOT_EXIST = 'P2025';
+const RELATED_RECORD_NOT_EXIST = "P2025";
 
 async function createLink(data: LinkCreateSchema, userId: number) {
   try {
@@ -28,15 +28,15 @@ async function createLink(data: LinkCreateSchema, userId: number) {
     return newLink;
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
-      console.error('create link prisma error: ', error);
+      console.error("create link prisma error: ", error);
       if (error.code === RELATED_RECORD_NOT_EXIST) {
         throw new BadRequest(
-          'fail to add new link, make sure you are using correct user account and try again',
+          "fail to add new link, make sure you are using correct user account and try again",
         );
       }
     }
-    console.error('create link repository error: ', error);
-    throw new ServerError('fail to add new link, please try again later');
+    console.error("create link repository error: ", error);
+    throw new ServerError("fail to add new link, please try again later");
   }
 }
 
@@ -68,10 +68,10 @@ async function updateLink(
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === RELATED_RECORD_NOT_EXIST) {
-        throw new NotFoundError('update link fail, link is not found');
+        throw new NotFoundError("update link fail, link is not found");
       }
     }
-    throw new BadRequest('update link fail, please try again');
+    throw new BadRequest("update link fail, please try again");
   }
 }
 
@@ -90,14 +90,14 @@ async function deleteLink(id: number, userId: number) {
     return true;
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
-      console.error('delete link repo prisma error: ', error);
+      console.error("delete link repo prisma error: ", error);
 
       if (error.code === RELATED_RECORD_NOT_EXIST) {
-        throw new NotFoundError('delete link fail, link is not found');
+        throw new NotFoundError("delete link fail, link is not found");
       }
     }
-    console.error('delete link repo error: ', error);
-    throw new BadRequest('delete link fail, please try again');
+    console.error("delete link repo error: ", error);
+    throw new BadRequest("delete link fail, please try again");
   }
 }
 
@@ -121,10 +121,10 @@ async function getLinks(
     return links;
   } catch (error) {
     if (error instanceof PrismaClientInitializationError) {
-      console.log('prisma connection timeout error: ', error);
+      console.log("prisma connection timeout error: ", error);
     }
     throw new ServerError(
-      'fail to retrieve your requested links, please try again later',
+      "fail to retrieve your requested links, please try again later",
     );
   }
 }
@@ -132,17 +132,19 @@ async function getLinks(
 async function getLinkById(username: string, id: number) {
   try {
     const link = await prisma.link.findUniqueOrThrow({
-      where: { id: id, AND: { User: { username: username } } }
+      where: { id: id, AND: { User: { username: username } } },
     });
-    return link
+    return link;
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === RELATED_RECORD_NOT_EXIST) {
-        throw new NotFoundError("link is not found")
+        throw new NotFoundError("link is not found");
       }
     }
-    console.log("get link by id error: ", error)
-    throw new BadRequest("fail to retrive your requested links, please try again later")
+    console.log("get link by id error: ", error);
+    throw new BadRequest(
+      "fail to retrive your requested links, please try again later",
+    );
   }
 }
 

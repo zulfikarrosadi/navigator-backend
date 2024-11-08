@@ -24,7 +24,7 @@ export class BadRequest extends Error {
 
 export class AuthError extends Error {
   public code: number;
-  constructor(message: string = 'username or key is incorrect') {
+  constructor(message = "username or key is incorrect") {
     super(message);
     this.code = 400;
   }
@@ -33,7 +33,7 @@ export class AuthError extends Error {
 export class NotFoundError extends Error {
   public code: number;
   constructor(message: string) {
-    super(message)
-    this.code = 404
+    super(message);
+    this.code = 404;
   }
 }
