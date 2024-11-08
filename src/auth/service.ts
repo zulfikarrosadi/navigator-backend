@@ -5,10 +5,14 @@ import { AuthError } from '../error';
 import bcrypt from 'bcrypt'
 
 const DEFAULT_BUN_HASH_COST = 4;
+type User = {
+  id: number;
+  username: string
+}
 
 async function createUser(
   data: UserCreateSchema,
-): Promise<ApiResponse<{ id: number; username: string }>> {
+): Promise<ApiResponse<User>> {
   try {
     const hashedKey = bcrypt.hashSync(data.key, DEFAULT_BUN_HASH_COST)
     const newUser = await userRepository.createUser({
@@ -40,7 +44,7 @@ async function createUser(
 
 async function login(
   data: UserCreateSchema,
-): Promise<ApiResponse<{ id: number; username: string }>> {
+): Promise<ApiResponse<User>> {
   try {
     const user = await userRepository.getUserByUsername(data.username);
     if (!user) {
