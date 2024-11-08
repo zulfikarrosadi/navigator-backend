@@ -26,6 +26,7 @@ app.use(validateUser);
 app.post('/api/links', validateInput(linksCreateSchema), linkHandler.create);
 app.put('/api/links/:id', validateInput(linkUpdateSchema), linkHandler.update);
 app.delete('/api/links/:id', linkHandler.destroy);
+app.get('/api/links/:username/:id', linkHandler.show);
 
 app.listen(process.env.PORT, () =>
   console.log(`server running on port ${process.env.PORT}`),

@@ -55,4 +55,12 @@ async function index(req: Request<{ username: string }>, res: Response) {
   return res.status(200).json(result);
 }
 
-export default { create, update, destroy, index };
+async function show(req: Request<{ username: string, id: string }>, res: Response) {
+  const result = await service.getLinkById(req.params.username, req.params.id)
+  if (result.status === "fail") {
+    return res.status(result.error.code).json(result)
+  }
+  return res.status(200).json(result)
+}
+
+export default { create, update, destroy, index, show };
