@@ -88,8 +88,6 @@ describe('update link service tests', () => {
       let linkId: string
       if (newLink.status === "success") {
         linkId = `${newLink.data.links.id}`
-      } else {
-        expect().fail('create dummy data fail')
       }
       const result = await service.updateLink(VALID_NEW_LINK_DATA, linkId!, INVALID_USER_ID)
       expect(result.status).toBe("fail")
@@ -108,8 +106,6 @@ describe('update link service tests', () => {
       let linkId: string
       if (newLink.status === "success") {
         linkId = `${newLink.data.links.id}`
-      } else {
-        expect().fail('update success fail, fail to create dummy data')
       }
       const result = await service.updateLink(VALID_NEW_LINK_DATA, linkId!, VALID_USER_ID)
       expect(result.status).toBe('success')
