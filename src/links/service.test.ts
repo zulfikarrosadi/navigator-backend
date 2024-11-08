@@ -1,4 +1,3 @@
-import { expect, beforeEach, test, describe } from 'bun:test';
 import service from './service';
 
 describe('create test service', () => {
@@ -21,8 +20,8 @@ describe('create test service', () => {
       );
       expect(result.status).toBe('success');
       if (result.status === 'success') {
-        expect(result.data.links.title).toBe(VALID_NEW_LINK_DATA.title);
-        expect(result.data.links.link).toBe(VALID_NEW_LINK_DATA.link);
+        expect(result.data.links!.title).toBe(VALID_NEW_LINK_DATA.title);
+        expect(result.data.links!.link).toBe(VALID_NEW_LINK_DATA.link);
       }
     });
   });
@@ -37,7 +36,7 @@ describe('create test service', () => {
         expect(result.error.code === 400);
         expect(
           result.error.message ===
-            'fail to add new link, make sure you are using correct user account and try again',
+          'fail to add new link, make sure you are using correct user account and try again',
         );
       }
     });
@@ -88,13 +87,11 @@ describe('update link service tests', () => {
       const newLink = await service.createLink(VALID_NEW_LINK_DATA, VALID_USER_ID)
       let linkId: string
       if (newLink.status === "success") {
-        linkId = `${newLink.data.links.id}`
-      } else {
-        expect().fail('create dummy data fail')
+        linkId = `${newLink.data.links!.id}`
       }
       const result = await service.updateLink(VALID_NEW_LINK_DATA, linkId!, INVALID_USER_ID)
       expect(result.status).toBe("fail")
-      if(result.status === "fail") {
+      if (result.status === "fail") {
         expect(result.error.code).toBe(404);
         expect(result.error.message).toBe(
           'update link fail, link is not found',
@@ -108,14 +105,12 @@ describe('update link service tests', () => {
       const newLink = await service.createLink(VALID_NEW_LINK_DATA, VALID_USER_ID)
       let linkId: string
       if (newLink.status === "success") {
-        linkId = `${newLink.data.links.id}`
-      } else {
-        expect().fail('update success fail, fail to create dummy data')
+        linkId = `${newLink.data.links!.id}`
       }
       const result = await service.updateLink(VALID_NEW_LINK_DATA, linkId!, VALID_USER_ID)
       expect(result.status).toBe('success')
       if (result.status === 'success') {
-        expect(result.data.links.title).toBe(VALID_NEW_LINK_DATA.title)
+        expect(result.data.links!.title).toBe(VALID_NEW_LINK_DATA.title)
       }
     })
   })

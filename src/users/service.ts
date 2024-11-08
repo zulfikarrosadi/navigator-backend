@@ -2,6 +2,7 @@ import userRepository from './repository';
 import type { ApiResponse } from '../schema';
 import type { UserCreateSchema } from './schema';
 import { AuthError } from '../error';
+import bcrypt from 'bcrypt'
 
 const DEFAULT_BUN_HASH_COST = 4;
 
@@ -9,10 +10,7 @@ async function createUser(
   data: UserCreateSchema,
 ): Promise<ApiResponse<{ id: number; username: string }>> {
   try {
-    const hashedKey = Bun.password.hashSync(data.key, {
-      algorithm: 'bcrypt',
-      cost: DEFAULT_BUN_HASH_COST,
-    });
+    const hashedKey = bcrypt.hashSync(data.key, DEFAULT_BUN_HASH_COST)
     const newUser = await userRepository.createUser({
       ...data,
       key: hashedKey,
@@ -48,7 +46,7 @@ async function login(
     if (!user) {
       throw new AuthError();
     }
-    const isPasswordCorrect = Bun.password.verifySync(data.key, user.key);
+    const isPasswordCorrect = bcrypt.compareSync(data.key, user.key)
     if (!isPasswordCorrect) {
       throw new AuthError();
     }

@@ -77,6 +77,7 @@ async function deleteLink(id: string, userId: number): Promise<ApiResponse<null>
   }
   try {
     await repository.deleteLink(parsedLinkId, userId);
+    // @ts-ignore
     return {
       status: 'success',
     };
@@ -128,4 +129,39 @@ async function getLinks(
   }
 }
 
-export default { createLink, updateLink, deleteLink, getLinks };
+async function getLinkById(username: string, id: string): Promise<ApiResponse<{ id: number, title: string, link: string }>> {
+  const parsedId = parseInt(id, 10)
+  if (Number.isNaN(parsedId)) {
+    return {
+      status: "fail",
+      error: {
+        code: 404,
+        message: "link not found"
+      }
+    }
+  }
+  try {
+    const link = await repository.getLinkById(username, parsedId)
+    return {
+      status: "success",
+      data: {
+        links: {
+          id: link.id,
+          title: link.title,
+          link: link.link
+        }
+      }
+    }
+  } catch (error: any) {
+    return {
+      status: "fail",
+      error: {
+        message: error.message || error,
+        code: error.code
+
+      }
+    }
+  }
+}
+
+export default { createLink, updateLink, deleteLink, getLinks, getLinkById };
