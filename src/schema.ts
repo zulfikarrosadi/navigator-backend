@@ -1,7 +1,7 @@
 export type ApiResponse<Data> =
-  | { status: 'success'; data: Record<string, Data> }
+  | { status: "success"; data: Record<string, Data> }
   | {
-      status: 'fail';
+      status: "fail";
       error: {
         code: number;
         message: string;
