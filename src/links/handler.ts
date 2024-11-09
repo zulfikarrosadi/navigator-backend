@@ -1,7 +1,7 @@
-import type { Request, Response } from 'express';
-import service from './service';
-import type { LinkCreateSchema, LinkUpdateSchema } from './schema';
-import type { ApiResponse, JWT_Payload } from '../schema';
+import type { Request, Response } from "express";
+import type { ApiResponse, JWT_Payload } from "../schema";
+import type { LinkCreateSchema, LinkUpdateSchema } from "./schema";
+import service from "./service";
 
 async function create(
   req: Request<
@@ -15,7 +15,7 @@ async function create(
     { link: req.body.link, title: req.body.title },
     res.locals.user.id,
   );
-  if (result.status === 'fail') {
+  if (result.status === "fail") {
     return res.status(result.error.code).json(result);
   }
   return res.status(201).json(result);
@@ -30,7 +30,7 @@ async function update(
     req.params.id,
     res.locals.user.id,
   );
-  if (result.status === 'fail') {
+  if (result.status === "fail") {
     return res.status(result.error.code).json(result);
   }
   return res.status(200).json(result);
@@ -41,7 +41,7 @@ async function destroy(
   res: Response<ApiResponse<any>, { user: JWT_Payload }>,
 ) {
   const result = await service.deleteLink(req.params.id, res.locals.user.id);
-  if (result.status === 'fail') {
+  if (result.status === "fail") {
     return res.status(result.error.code).json(result);
   }
   return res.sendStatus(204);
@@ -49,18 +49,21 @@ async function destroy(
 
 async function index(req: Request<{ username: string }>, res: Response) {
   const result = await service.getLinks(req.params.username);
-  if (result.status === 'fail') {
+  if (result.status === "fail") {
     return res.status(result.error.code).json(result);
   }
   return res.status(200).json(result);
 }
 
-async function show(req: Request<{ username: string, id: string }>, res: Response) {
-  const result = await service.getLinkById(req.params.username, req.params.id)
+async function show(
+  req: Request<{ username: string; id: string }>,
+  res: Response,
+) {
+  const result = await service.getLinkById(req.params.username, req.params.id);
   if (result.status === "fail") {
-    return res.status(result.error.code).json(result)
+    return res.status(result.error.code).json(result);
   }
-  return res.status(200).json(result)
+  return res.status(200).json(result);
 }
 
 export default { create, update, destroy, index, show };

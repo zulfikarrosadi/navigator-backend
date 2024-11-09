@@ -1,6 +1,6 @@
-import type { NextFunction, Request, Response } from 'express';
-import type { AnyZodObject } from 'zod';
-import type { ApiResponse } from '../schema';
+import type { NextFunction, Request, Response } from "express";
+import type { AnyZodObject } from "zod";
+import type { ApiResponse } from "../schema";
 
 export function validateInput(schema: AnyZodObject) {
   return async (
@@ -13,9 +13,9 @@ export function validateInput(schema: AnyZodObject) {
       return next();
     } catch (error: any) {
       return res.status(400).send({
-        status: 'fail',
+        status: "fail",
         error: {
-          message: 'validation errors',
+          message: "validation errors",
           code: 400,
           details: error.errors
             .map((e: { path: any; message: string }) => {

@@ -1,325 +1,284 @@
 {
-	"info": {
-		"_postman_id": "4b5dfc0f-9fad-4b9f-af00-21967e60c37f",
-		"name": "Navigator",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "14124784",
-		"_collection_link": "https://dark-meadow-855364.postman.co/workspace/Belajar~41e0fb13-11ad-45d4-9753-7a70a577ec62/collection/14124784-4b5dfc0f-9fad-4b9f-af00-21967e60c37f?action=share&source=collection_link&creator=14124784"
-	},
-	"item": [
-		{
-			"name": "Auth",
-			"item": [
-				{
-					"name": "Sign Up",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 201) {",
-									"    const res = pm.response.json()",
-									"    pm.collectionVariables.set(\"current_username\", res.data.users.username)",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"key\": \"{{key}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/signup",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"signup"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Sign In",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 200) {",
-									"    const body = pm.response.json()",
-									"    pm.collectionVariables.set('current_username', body.data.users.username)",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"{{current_username}}\",\n    \"key\": \"{{key}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/signin",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"signin"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Refresh Token",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 200) {",
-									"    const {data} = pm.response.json()",
-									"    pm.collectionVariables.set(\"current_username\", data.users.username)",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/refresh",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"refresh"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Links",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"if (pm.response.code === 201) {",
-							"    const {data} = pm.response.json()",
-							"    pm.collectionVariables.set('link_id', data.links.id)",
-							"}"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"{{$randomJobTitle}}\",\n    \"link\": \"{{$randomUrl}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{base_url}}/links",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"links"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Links",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/links/:id",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"links",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "{{link_id}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Links",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"title\": \"{{$randomJobTitle}}\",\n    \"link\": \"{{$randomUrl}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{base_url}}/links/:id",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"links",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "{{link_id}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Links",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/links/:username",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"links",
-						":username"
-					],
-					"variable": [
-						{
-							"key": "username",
-							"value": "{{current_username}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Link By ID",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/links/:username/:id",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"links",
-						":username",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "username",
-							"value": "{{current_username}}"
-						},
-						{
-							"key": "id",
-							"value": "{{link_id}}"
-						}
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "base_url",
-			"value": "http://localhost:3002/api",
-			"type": "string"
-		},
-		{
-			"key": "key",
-			"value": "123",
-			"type": "string"
-		},
-		{
-			"key": "current_username",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "link_id",
-			"value": "",
-			"type": "string"
-		}
-	]
+  "info": {
+    "_postman_id": "4b5dfc0f-9fad-4b9f-af00-21967e60c37f",
+    "name": "Navigator",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14124784",
+    "_collection_link": "https://dark-meadow-855364.postman.co/workspace/Belajar~41e0fb13-11ad-45d4-9753-7a70a577ec62/collection/14124784-4b5dfc0f-9fad-4b9f-af00-21967e60c37f?action=share&source=collection_link&creator=14124784"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Sign Up",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const res = pm.response.json()",
+                  "    pm.collectionVariables.set(\"current_username\", res.data.users.username)",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"key\": \"{{key}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/signup",
+              "host": ["{{base_url}}"],
+              "path": ["signup"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign In",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json()",
+                  "    pm.collectionVariables.set('current_username', body.data.users.username)",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{current_username}}\",\n    \"key\": \"{{key}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/signin",
+              "host": ["{{base_url}}"],
+              "path": ["signin"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const {data} = pm.response.json()",
+                  "    pm.collectionVariables.set(\"current_username\", data.users.username)",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["refresh"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Links",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    const {data} = pm.response.json()",
+              "    pm.collectionVariables.set('link_id', data.links.id)",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"{{$randomJobTitle}}\",\n    \"link\": \"{{$randomUrl}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/links",
+          "host": ["{{base_url}}"],
+          "path": ["links"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Links",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/links/:id",
+          "host": ["{{base_url}}"],
+          "path": ["links", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{link_id}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Links",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"{{$randomJobTitle}}\",\n    \"link\": \"{{$randomUrl}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/links/:id",
+          "host": ["{{base_url}}"],
+          "path": ["links", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{link_id}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Links",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/links/:username",
+          "host": ["{{base_url}}"],
+          "path": ["links", ":username"],
+          "variable": [
+            {
+              "key": "username",
+              "value": "{{current_username}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Link By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/links/:username/:id",
+          "host": ["{{base_url}}"],
+          "path": ["links", ":username", ":id"],
+          "variable": [
+            {
+              "key": "username",
+              "value": "{{current_username}}"
+            },
+            {
+              "key": "id",
+              "value": "{{link_id}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3002/api",
+      "type": "string"
+    },
+    {
+      "key": "key",
+      "value": "123",
+      "type": "string"
+    },
+    {
+      "key": "current_username",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "link_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
 }
