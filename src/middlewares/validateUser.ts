@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import type { JWT_Payload } from "../schema";
-import logger from "../../logger";
+import logger from "../logger";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
