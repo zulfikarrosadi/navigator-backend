@@ -1,3 +1,4 @@
+import logger from "../logger";
 import { ServerError } from "../error";
 import type { ApiResponse } from "../schema";
 import repository from "./repository";
@@ -12,8 +13,7 @@ async function createLink(
 
     return { status: "success", data: { links: newLink } };
   } catch (error: any) {
-    console.error("create link service error: ", error);
-
+    logger.error(error.message || error);
     return {
       status: "fail",
       error: {

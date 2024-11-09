@@ -5,6 +5,7 @@ import {
 } from "@prisma/client/runtime/library";
 import { BadRequest, NotFoundError, ServerError } from "../error";
 import type { LinkCreateSchema, LinkUpdateSchema } from "./schema";
+import logger from "../logger";
 
 const prisma = new PrismaClient();
 
@@ -28,14 +29,14 @@ async function createLink(data: LinkCreateSchema, userId: number) {
     return newLink;
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
-      console.error("create link prisma error: ", error);
+      logger.error(error.message);
       if (error.code === RELATED_RECORD_NOT_EXIST) {
         throw new BadRequest(
           "fail to add new link, make sure you are using correct user account and try again",
         );
       }
     }
-    console.error("create link repository error: ", error);
+    logger.error(error);
     throw new ServerError("fail to add new link, please try again later");
   }
 }
@@ -90,13 +91,12 @@ async function deleteLink(id: number, userId: number) {
     return true;
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
-      console.error("delete link repo prisma error: ", error);
-
+      logger.error(error.message);
       if (error.code === RELATED_RECORD_NOT_EXIST) {
         throw new NotFoundError("delete link fail, link is not found");
       }
     }
-    console.error("delete link repo error: ", error);
+    logger.error(error);
     throw new BadRequest("delete link fail, please try again");
   }
 }
@@ -121,7 +121,7 @@ async function getLinks(
     return links;
   } catch (error) {
     if (error instanceof PrismaClientInitializationError) {
-      console.log("prisma connection timeout error: ", error);
+      logger.error(error.message);
     }
     throw new ServerError(
       "fail to retrieve your requested links, please try again later",
@@ -141,7 +141,7 @@ async function getLinkById(username: string, id: number) {
         throw new NotFoundError("link is not found");
       }
     }
-    console.log("get link by id error: ", error);
+    logger.error(error);
     throw new BadRequest(
       "fail to retrive your requested links, please try again later",
     );

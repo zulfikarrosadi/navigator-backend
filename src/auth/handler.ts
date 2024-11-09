@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import type { JWT_Payload } from "../schema";
 import type { UserCreateSchema } from "./schema";
 import service from "./service";
+import logger from "../logger";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 /**
@@ -85,7 +86,7 @@ async function login(
 async function refresh(req: Request, res: Response) {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
-    console.log("refresh token empty: ", refreshToken);
+    logger.warn("refresh token cookie is empty");
     return res.status(401).json({
       status: "fail",
       error: {
@@ -100,7 +101,9 @@ async function refresh(req: Request, res: Response) {
     const newAccessToken = jwt.sign(
       { id: decoded.id, username: decoded.username },
       JWT_SECRET,
-      { expiresIn: ACCESS_TOKEN_EXPIRATION_TIME },
+      {
+        expiresIn: ACCESS_TOKEN_EXPIRATION_TIME,
+      },
     );
     return res
       .status(200)
@@ -118,8 +121,8 @@ async function refresh(req: Request, res: Response) {
           },
         },
       });
-  } catch (error) {
-    console.log("refresh token invalid: ", error);
+  } catch (error: any) {
+    logger.error(`refresh token invalid ${error.message || error}`);
     return res.status(401).json({
       status: "fail",
       error: {

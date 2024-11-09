@@ -3,6 +3,7 @@ import { AuthError } from "../error";
 import type { ApiResponse } from "../schema";
 import userRepository from "./repository";
 import type { UserCreateSchema } from "./schema";
+import logger from "../logger";
 
 const DEFAULT_BUN_HASH_COST = 4;
 type User = {
@@ -28,8 +29,7 @@ async function createUser(data: UserCreateSchema): Promise<ApiResponse<User>> {
       },
     };
   } catch (error: any) {
-    console.error("create user service error: ", error);
-
+    logger.error(error.message || error);
     return {
       status: "fail",
       error: {

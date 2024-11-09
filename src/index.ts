@@ -8,6 +8,7 @@ import linkHandler from "./links/handler";
 import { linkUpdateSchema, linksCreateSchema } from "./links/schema";
 import { validateInput } from "./middlewares/validateInput";
 import validateUser from "./middlewares/validateUser";
+import logger from "./logger";
 
 const app = express();
 configDotenv();
@@ -32,7 +33,7 @@ app.delete("/api/links/:id", linkHandler.destroy);
 app.get("/api/links/:username/:id", linkHandler.show);
 
 app.listen(process.env.PORT, () =>
-  console.log(`server running on port ${process.env.PORT}`),
+  logger.info(`server running on port ${process.env.PORT}`),
 );
 
 function getAllowedOrigin() {
