@@ -3,7 +3,8 @@ import { AuthError } from "../error";
 import type { ApiResponse } from "../schema";
 import userRepository from "./repository";
 import type { UserCreateSchema } from "./schema";
-import logger from "../logger";
+import { logWithContext } from "../logger";
+import { getContext } from "../asyncLocalStorage";
 
 const DEFAULT_BUN_HASH_COST = 4;
 type User = {
@@ -29,7 +30,14 @@ async function createUser(data: UserCreateSchema): Promise<ApiResponse<User>> {
       },
     };
   } catch (error: any) {
-    logger.error(error.message || error);
+    const context = getContext();
+    logWithContext(
+      "error",
+      "service",
+      error.message || error,
+      "createUser",
+      context,
+    );
     return {
       status: "fail",
       error: {
@@ -60,6 +68,14 @@ async function login(data: UserCreateSchema): Promise<ApiResponse<User>> {
       },
     };
   } catch (error: any) {
+    const context = getContext();
+    logWithContext(
+      "error",
+      "service",
+      error.message || error,
+      "login",
+      context,
+    );
     return {
       status: "fail",
       error: {

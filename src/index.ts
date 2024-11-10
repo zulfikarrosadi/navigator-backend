@@ -8,6 +8,10 @@ import linkHandler from "./links/handler";
 import { linkUpdateSchema, linksCreateSchema } from "./links/schema";
 import { validateInput } from "./middlewares/validateInput";
 import validateUser from "./middlewares/validateUser";
+import {
+  generateRequestId,
+  storeUserToContext,
+} from "./middlewares/asyncLocalStorage";
 import logger from "./logger";
 
 const app = express();
@@ -21,19 +25,20 @@ app.use(
     origin: getAllowedOrigin(),
   }),
 );
-
+app.use(generateRequestId);
 app.post("/api/signup", validateInput(userCreateSchema), authHandler.create);
 app.post("/api/signin", validateInput(userCreateSchema), authHandler.login);
 app.get("/api/refresh", authHandler.refresh);
 app.get("/api/links/:username", linkHandler.index);
 app.use(validateUser);
+app.use(storeUserToContext);
 app.post("/api/links", validateInput(linksCreateSchema), linkHandler.create);
 app.put("/api/links/:id", validateInput(linkUpdateSchema), linkHandler.update);
 app.delete("/api/links/:id", linkHandler.destroy);
 app.get("/api/links/:username/:id", linkHandler.show);
 
 app.listen(process.env.PORT, () =>
-  logger.info(`server running on port ${process.env.PORT}`),
+  logger("info", "handler", `server is running on port ${process.env.PORT}`),
 );
 
 function getAllowedOrigin() {
