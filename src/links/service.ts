@@ -1,8 +1,9 @@
-import logger from "../logger";
+import { logWithContext } from "../logger";
 import { ServerError } from "../error";
 import type { ApiResponse } from "../schema";
 import repository from "./repository";
 import type { LinkCreateSchema, LinkUpdateSchema } from "./schema";
+import { getContext } from "../asyncLocalStorage";
 
 async function createLink(
   data: LinkCreateSchema,
@@ -13,7 +14,14 @@ async function createLink(
 
     return { status: "success", data: { links: newLink } };
   } catch (error: any) {
-    logger.error(error.message || error);
+    const context = getContext();
+    logWithContext(
+      "error",
+      "service",
+      error.message || error,
+      "createLink",
+      context,
+    );
     return {
       status: "fail",
       error: {
@@ -31,6 +39,14 @@ async function updateLink(
 ): Promise<ApiResponse<LinkUpdateSchema & { id: number }>> {
   const parsedLinkId = Number.parseInt(linkId);
   if (Number.isNaN(parsedLinkId)) {
+    const context = getContext();
+    logWithContext(
+      "error",
+      "service",
+      "update link fail, link id parse fail",
+      "updateLink",
+      context,
+    );
     return {
       status: "fail",
       error: {
@@ -53,6 +69,14 @@ async function updateLink(
       },
     };
   } catch (error: any) {
+    const context = getContext();
+    logWithContext(
+      "error",
+      "service",
+      error.message || error,
+      "updateLink",
+      context,
+    );
     return {
       status: "fail",
       error: {
@@ -69,6 +93,14 @@ async function deleteLink(
 ): Promise<ApiResponse<null>> {
   const parsedLinkId = Number.parseInt(id, 10);
   if (Number.isNaN(parsedLinkId)) {
+    const context = getContext();
+    logWithContext(
+      "error",
+      "service",
+      "delete link fail, link id parse fail",
+      "deleteLink",
+      context,
+    );
     return {
       status: "fail",
       error: {
@@ -84,6 +116,14 @@ async function deleteLink(
       status: "success",
     };
   } catch (error: any) {
+    const context = getContext();
+    logWithContext(
+      "error",
+      "service",
+      error.message || error,
+      "deleteLink",
+      context,
+    );
     return {
       status: "fail",
       error: {
@@ -121,6 +161,14 @@ async function getLinks(
       },
     };
   } catch (error: any) {
+    const context = getContext();
+    logWithContext(
+      "error",
+      "service",
+      error.message || error,
+      "getLinks",
+      context,
+    );
     return {
       status: "fail",
       error: {
@@ -137,6 +185,14 @@ async function getLinkById(
 ): Promise<ApiResponse<{ id: number; title: string; link: string }>> {
   const parsedId = Number.parseInt(id, 10);
   if (Number.isNaN(parsedId)) {
+    const context = getContext();
+    logWithContext(
+      "error",
+      "service",
+      "get link by id fail, link id parse fail",
+      "updateLink",
+      context,
+    );
     return {
       status: "fail",
       error: {
@@ -158,6 +214,15 @@ async function getLinkById(
       },
     };
   } catch (error: any) {
+    const context = getContext();
+    logWithContext(
+      "error",
+      "service",
+      error.message || error,
+      "getLinkById",
+      context,
+    );
+
     return {
       status: "fail",
       error: {
