@@ -7,7 +7,7 @@
     "start": "node dist/index.js",
     "postinstall": "prisma generate",
     "build": "npx prisma generate && npx tsc",
-    "dev": "npx ts-node-dev --transpile-only --respawn ./src/index.ts",
+    "dev": "npx ts-node-dev --respawn --transpile-only --rs ./src/index.ts",
     "test": "jest",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write .",
