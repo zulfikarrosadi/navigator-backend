@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 import type { JWT_Payload } from "../schema";
 import type { UserCreateSchema } from "./schema";
 import service from "./service";
-import logger from "../logger";
+import { getContext } from "../asyncLocalStorage";
+import { logWithContext } from "../logger";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 /**
@@ -86,8 +87,15 @@ async function login(
 async function refresh(req: Request, res: Response) {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
-    logger.warn("refresh token cookie is empty");
-    return res.status(401).json({
+    const context = getContext();
+    logWithContext(
+      "error",
+      "handler",
+      "refresh token cookie is empty",
+      "refresh",
+      context,
+    );
+    res.status(401).json({
       status: "fail",
       error: {
         code: 401,
@@ -122,8 +130,15 @@ async function refresh(req: Request, res: Response) {
         },
       });
   } catch (error: any) {
-    logger.error(`refresh token invalid ${error.message || error}`);
-    return res.status(401).json({
+    const context = getContext();
+    logWithContext(
+      "error",
+      "handler",
+      error.message || error,
+      "refreshToken",
+      context,
+    );
+    res.status(401).json({
       status: "fail",
       error: {
         code: 401,

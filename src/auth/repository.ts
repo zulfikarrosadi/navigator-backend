@@ -2,7 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { AuthError, ServerError, UserAlreadyExistError } from "../error";
 import type { UserCreateSchema } from "./schema";
-import logger from "../logger";
+import { getContext } from "../asyncLocalStorage";
+import { logWithContext } from "../logger";
 
 const prisma = new PrismaClient();
 
@@ -22,14 +23,27 @@ async function createUser(data: UserCreateSchema) {
       },
     });
     return newUser;
-  } catch (error) {
+  } catch (error: any) {
+    const context = getContext();
     if (error instanceof PrismaClientKnownRequestError) {
-      logger.error(error.message);
       if (error.code === UNIQUE_CONSTRAINT_VIOLATION_CODE) {
+        logWithContext(
+          "error",
+          "repository",
+          "username already exist",
+          "createUser",
+          context,
+        );
         throw new UserAlreadyExistError("this username already exist");
       }
     }
-    logger.error(error);
+    logWithContext(
+      "error",
+      "repository",
+      error.message || error,
+      "createUser",
+      context,
+    );
     throw new ServerError(
       "fail to register your account, please try again later",
     );
@@ -45,13 +59,26 @@ async function getUserByUsername(username: string) {
 
     return user;
   } catch (error: any) {
+    const context = getContext();
     if (error instanceof PrismaClientKnownRequestError) {
-      logger.error(error.message);
       if (error.code === RELATED_RECORD_NOT_EXIST) {
+        logWithContext(
+          "error",
+          "repository",
+          "username not found",
+          "getUserByUsername",
+          context,
+        );
         throw new AuthError();
       }
     }
-    logger.error(error);
+    logWithContext(
+      "error",
+      "repository",
+      error.message || error,
+      "getUserByUsername",
+      context,
+    );
     throw new ServerError(
       "fail to login, this is not your fault, please try again later",
     );

@@ -5,7 +5,8 @@ import {
 } from "@prisma/client/runtime/library";
 import { BadRequest, NotFoundError, ServerError } from "../error";
 import type { LinkCreateSchema, LinkUpdateSchema } from "./schema";
-import logger from "../logger";
+import { getContext } from "../asyncLocalStorage";
+import { logWithContext } from "../logger";
 
 const prisma = new PrismaClient();
 
@@ -27,16 +28,29 @@ async function createLink(data: LinkCreateSchema, userId: number) {
     });
 
     return newLink;
-  } catch (error) {
+  } catch (error: any) {
+    const context = getContext();
     if (error instanceof PrismaClientKnownRequestError) {
-      logger.error(error.message);
       if (error.code === RELATED_RECORD_NOT_EXIST) {
+        logWithContext(
+          "error",
+          "repository",
+          "fail to create new link, user not exist",
+          "createLink",
+          context,
+        );
         throw new BadRequest(
           "fail to add new link, make sure you are using correct user account and try again",
         );
       }
     }
-    logger.error(error);
+    logWithContext(
+      "error",
+      "repository",
+      error.message || error,
+      "createLink",
+      context,
+    );
     throw new ServerError("fail to add new link, please try again later");
   }
 }
@@ -66,12 +80,27 @@ async function updateLink(
       },
     });
     return updatedLink;
-  } catch (error) {
+  } catch (error: any) {
+    const context = getContext();
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === RELATED_RECORD_NOT_EXIST) {
+        logWithContext(
+          "error",
+          "repository",
+          "update link fail, link not found",
+          "updateLink",
+          context,
+        );
         throw new NotFoundError("update link fail, link is not found");
       }
     }
+    logWithContext(
+      "error",
+      "repository",
+      error.message || error,
+      "updateLink",
+      context,
+    );
     throw new BadRequest("update link fail, please try again");
   }
 }
@@ -89,14 +118,27 @@ async function deleteLink(id: number, userId: number) {
       },
     });
     return true;
-  } catch (error) {
+  } catch (error: any) {
+    const context = getContext();
     if (error instanceof PrismaClientKnownRequestError) {
-      logger.error(error.message);
       if (error.code === RELATED_RECORD_NOT_EXIST) {
+        logWithContext(
+          "error",
+          "repository",
+          "delete link fail, link not found",
+          "deleteLink",
+          context,
+        );
         throw new NotFoundError("delete link fail, link is not found");
       }
     }
-    logger.error(error);
+    logWithContext(
+      "error",
+      "repository",
+      error.message || error,
+      "deleteLink",
+      context,
+    );
     throw new BadRequest("delete link fail, please try again");
   }
 }
@@ -119,10 +161,18 @@ async function getLinks(
       },
     });
     return links;
-  } catch (error) {
+  } catch (error: any) {
+    const context = getContext();
     if (error instanceof PrismaClientInitializationError) {
-      logger.error(error.message);
+      logWithContext("error", "repository", error.message, "getLinks", context);
     }
+    logWithContext(
+      "error",
+      "repository",
+      error.message || error,
+      "getLinks",
+      context,
+    );
     throw new ServerError(
       "fail to retrieve your requested links, please try again later",
     );
@@ -135,13 +185,27 @@ async function getLinkById(username: string, id: number) {
       where: { id: id, AND: { User: { username: username } } },
     });
     return link;
-  } catch (error) {
+  } catch (error: any) {
+    const context = getContext();
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === RELATED_RECORD_NOT_EXIST) {
+        logWithContext(
+          "error",
+          "repository",
+          "link is not found",
+          "getLinkById",
+          context,
+        );
         throw new NotFoundError("link is not found");
       }
     }
-    logger.error(error);
+    logWithContext(
+      "error",
+      "repository",
+      error.message || error,
+      "getLinkById",
+      context,
+    );
     throw new BadRequest(
       "fail to retrive your requested links, please try again later",
     );

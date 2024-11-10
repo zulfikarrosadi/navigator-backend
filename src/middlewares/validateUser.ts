@@ -2,6 +2,8 @@ import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import type { JWT_Payload } from "../schema";
 import logger from "../logger";
+import { getContext } from "../asyncLocalStorage";
+import { randomUUID } from "node:crypto";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
@@ -10,9 +12,13 @@ async function validateUser(
   res: Response<Record<string, any>, { user: JWT_Payload }>,
   next: NextFunction,
 ) {
-  const token = req.cookies.token;
-  if (!token) {
-    logger.warn("access token cookie is empty");
+  const accessToken = req.cookies.accessToken;
+  if (!accessToken) {
+    const context = getContext();
+    logger("error", "handler", "access token cookie is empty", {
+      requestId: context?.requestId ?? randomUUID(),
+      operationId: "validateUser",
+    });
     return res.status(403).json({
       status: "fail",
       error: {
@@ -22,12 +28,16 @@ async function validateUser(
     });
   }
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JWT_Payload;
+    const decoded = jwt.verify(accessToken, JWT_SECRET) as JWT_Payload;
 
     res.locals.user = decoded;
     next();
   } catch (error: any) {
-    logger.error(error.message || error);
+    const context = getContext();
+    logger("error", "handler", error.message || error, {
+      requestId: context?.requestId ?? randomUUID(),
+      operationId: "validateUser",
+    });
     return res.status(403).json({
       status: "fail",
       error: {
