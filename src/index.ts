@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { configDotenv } from "dotenv";
 import express from "express";
+import swaggerUI from "swagger-ui-express";
 import authHandler from "./auth/handler";
 import { userCreateSchema } from "./auth/schema";
 import linkHandler from "./links/handler";
@@ -13,9 +14,13 @@ import {
   storeUserToContext,
 } from "./middlewares/asyncLocalStorage";
 import logger from "./logger";
+import swaggerDocument from "./../openapi.json";
 
 const app = express();
 configDotenv();
+
+const SWAGGER_CSS_URL =
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
 
 app.use(express.json());
 app.use(cookieParser());
@@ -23,6 +28,15 @@ app.use(
   cors({
     credentials: true,
     origin: getAllowedOrigin(),
+  }),
+);
+app.use(
+  "/api/docs",
+  swaggerUI.serve,
+  swaggerUI.setup(swaggerDocument, {
+    customCssUrl: SWAGGER_CSS_URL,
+    customCss:
+      ".swagger-ui .opblock .opblock-summary-path-description-wrapper { align-items: center; display: flex; flex-wrap: wrap; gap: 0 10px; padding: 0 10px; width: 100%; }",
   }),
 );
 app.use(generateRequestId);
